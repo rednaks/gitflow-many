@@ -52,6 +52,12 @@ class App {
     multiSelectProjectContainer.append(this._$multiProjects);
     config.append(multiSelectProjectContainer);
 
+    const createBranchesBtn = $('<button>', {id: 'create-braches-btn'})
+    .text('Create Branches')
+    .on('click', this._createBranches.bind(this));
+
+    config.append(createBranchesBtn);
+
   }
 
   _listProjects() {
@@ -89,6 +95,41 @@ class App {
     .catch((error) => { 
       console.log(error);
     });
+  }
+
+  _createBranches() {
+    const thiz = this;
+    // we need a list of projects, and an issue
+    // Projects:
+    const selectedProjects = this._$multiProjects.val();
+    if (selectedProjects.length === 0) {
+      console.error('you need to select at least a project');
+      return;
+    }
+
+    // TODO 
+    // issue:
+    const selectedIssue = this._$issuesList.val();
+
+
+    if( !selectedIssue) {
+      console.error('You need to select an issue');
+      return;
+    }
+
+    console.log(this._$projectsList);
+    const fromBranch = 'master';
+    const branchName = `PM-${selectedIssue}`;
+
+    for(var i in selectedProjects){
+
+      const projectId = selectedProjects[i];
+      fetch(`${this._API_URL}/projects/${projectId}/repository/brabches?branch=${branchName}&ref=${fromBranch}`, 
+        {method: 'POST', headers: this._getHeaders()})
+      .then((result) => { console.log(result);})
+      .catch((error) => { console.log(error);});;
+    }
+
   }
 
   _getToken() {
