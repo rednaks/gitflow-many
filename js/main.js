@@ -10,7 +10,7 @@ class App {
 
     const tokenLabel = $('<label>', {'for': 'id-token', class: 'token'}).text('Access Token');
 
-    this._$tokenInput = $('<input>', {id: 'id-token', 'type': 'text', class:'token'});
+    this._$tokenInput = $('<input>', {id: 'id-token', 'type': 'text', class:'token', required: true});
     config.append(tokenLabel, this._$tokenInput);
 
     const listProjectsBtn = $('<button>', {id: 'id-list-projects-btn'})
@@ -33,14 +33,26 @@ class App {
   _listProjects() {
     // TODO
     const headers = new Headers();
-    if (this.token === undefined) {
-      tok
-    }
     // TODO
-    headers.append('', '');
+    headers.append('Private-Token', this._getToken());
 
+    console.log(headers);
     // TODO 
-    fetch(`${this._API_URL}/projects?membership=yes`);
+    fetch(`${this._API_URL}/projects?membership=yes`, {headers: headers})
+    .then((results) => {
+      return results.json();
+    }).then((repos) => { 
+      console.log(repos);
+    }).catch((error) => { console.log(error)});
+  }
+
+  _getToken() {
+    const tk = this._$tokenInput.val();
+    if (!tk) {
+      throw 'Missing token';
+    } else {
+      return tk;
+    }
   }
 
 }
