@@ -8,17 +8,19 @@ class App {
     const config = $('<div>', {id: 'config'});
     this._$content.append(config);
 
-    const tokenLabel = $('<label>', {'for': 'id-token', class: 'token'}).text('Access Token');
+    const tokenContainer = $('<div>', {class: 'token'});
+    const tokenLabel = $('<label>', {'for': 'id-token'}).text('Access Token');
 
     this._$tokenInput = $('<input>', 
-      {id: 'id-token', 'type': 'text', class:'token', required: true});
+      {id: 'id-token', 'type': 'text'});
     try{
       this._$tokenInput.val(this._getToken());
     } catch {
       console.log('no token found in cache');
     }
 
-    config.append(tokenLabel, this._$tokenInput);
+    tokenContainer.append(tokenLabel, this._$tokenInput);
+    config.append(tokenContainer);
 
     const listProjectsBtn = $('<button>', {id: 'id-list-projects-btn'})
       .text('List Projects')
@@ -26,9 +28,11 @@ class App {
     config.append(listProjectsBtn);
 
 
-    const projectsListLabel = $('<label>', {'for': 'id-projects-list', class:'projects-list'}).text('Projects List');
-    this._$projectsList = $('<select>', {id: 'id-projects-list', class:'projects-list'});
-    config.append(projectsListLabel, this._$projectsList);
+    const projectsListContainer = $('<div>', {class: 'projects-list'});
+    const projectsListLabel = $('<label>', {'for': 'id-projects-list'}).text('Projects List');
+    this._$projectsList = $('<select>', {id: 'id-projects-list'});
+    projectsListContainer.append(projectsListLabel, this._$projectsList);
+    config.append(projectsListContainer);
 
 
     const issuesListLabel = $('<label>', {'for': 'id-issues-list', class:'issues-list'}).text('Issues List');
@@ -38,14 +42,9 @@ class App {
   }
 
   _listProjects() {
-    // TODO
-    const headers = new Headers();
-    // TODO
-    headers.append('Private-Token', this._getToken());
 
-    console.log(headers);
-    // TODO 
-    fetch(`${this._API_URL}/projects?membership=yes`, {headers: headers})
+    fetch(`${this._API_URL}/projects?membership=yes`, 
+      {headers: this._getHeaders()})
     .then((results) => {
       return results.json();
     }).then((repos) => { 
@@ -73,6 +72,13 @@ class App {
       return tk;
     }
   }
+
+  _getHeaders() {
+    const headers = new Headers();
+    headers.append('Private-Token', this._getToken());
+
+    return headers;
+   }
 
 }
 
