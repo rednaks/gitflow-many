@@ -9,7 +9,7 @@ class App {
     this._$content.append(config);
 
     const tokenContainer = $('<div>', {class: 'token'});
-    const tokenLabel = $('<label>', {'for': 'id-token'}).text('Access Token');
+    const tokenLabel = $('<label>', {'for': 'id-token'}).text('Gitlab Access Token');
 
     this._$tokenInput = $('<input>', 
       {id: 'id-token', 'type': 'text'});
