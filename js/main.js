@@ -10,7 +10,14 @@ class App {
 
     const tokenLabel = $('<label>', {'for': 'id-token', class: 'token'}).text('Access Token');
 
-    this._$tokenInput = $('<input>', {id: 'id-token', 'type': 'text', class:'token', required: true});
+    this._$tokenInput = $('<input>', 
+      {id: 'id-token', 'type': 'text', class:'token', required: true});
+    try{
+      this._$tokenInput.val(this._getToken());
+    } catch {
+      console.log('no token found in cache');
+    }
+
     config.append(tokenLabel, this._$tokenInput);
 
     const listProjectsBtn = $('<button>', {id: 'id-list-projects-btn'})
@@ -47,10 +54,20 @@ class App {
   }
 
   _getToken() {
+    // check cache: 
+
+    let cached_token = localStorage.getItem('token');
+
+    if (!!cached_token) {
+      return cached_token;
+    }
+
+
     const tk = this._$tokenInput.val();
     if (!tk) {
       throw 'Missing token';
     } else {
+      localStorage.setItem('token', tk);
       return tk;
     }
   }
