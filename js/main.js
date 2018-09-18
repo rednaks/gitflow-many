@@ -50,18 +50,20 @@ class App {
       return results.json();
     }).then((repos) => { 
       console.log(repos);
+      for(var i in repos) {
+        let opt = $('<option>').val(repos[i].id).text(repos[i].name);
+        this._$projectsList.append(opt);
+      }
     }).catch((error) => { console.log(error)});
   }
 
   _getToken() {
     // check cache: 
-
     let cached_token = localStorage.getItem('token');
 
     if (!!cached_token) {
       return cached_token;
     }
-
 
     const tk = this._$tokenInput.val();
     if (!tk) {
