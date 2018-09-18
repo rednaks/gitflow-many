@@ -35,9 +35,13 @@ class App {
     config.append(projectsListContainer);
 
 
+    const listIssuesBtn = $('<button>', {id: 'id-list-projects-btn'})
+    .text('List Issues')
+    .on('click', this._listIssues.bind(this));
+
     const issuesListLabel = $('<label>', {'for': 'id-issues-list', class:'issues-list'}).text('Issues List');
     this._$issuesList = $('<select>', {id: 'id-issues-list', class:'issues-list'});
-    config.append(issuesListLabel, this._$issuesList);
+    config.append(listIssuesBtn, issuesListLabel, this._$issuesList);
 
   }
 
@@ -54,6 +58,25 @@ class App {
         this._$projectsList.append(opt);
       }
     }).catch((error) => { console.log(error)});
+  }
+
+  _listIssues() {
+    // our reference project.
+    const projectId = this._getSelectedProjectId();
+    fetch(`${this._API_URL}/projects/${projectId}/issues?state=opened`, {headers: this._getHeaders()})
+    .then((result) => {
+      return result.json();
+    })
+    .then((issues) => {
+      console.log(issues);
+      for(var i in issues) {
+        let opt = $('<option>').val(issues[i].id).text(issues[i].title);
+        this._$issuesList.append(opt);
+      }
+    })
+    .catch((error) => { 
+      console.log(error);
+    });
   }
 
   _getToken() {
@@ -80,6 +103,15 @@ class App {
     return headers;
    }
 
+  _getSelectedProjectId() {
+
+    const val =  this._$projectsList.val();
+    if (!val) {
+      throw 'No project selected, You need to fetch projects first';
+    }
+
+    return val;
+  }
 }
 
 const myApp = new App();
