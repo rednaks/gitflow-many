@@ -43,6 +43,15 @@ class App {
     this._$issuesList = $('<select>', {id: 'id-issues-list', class:'issues-list'});
     config.append(listIssuesBtn, issuesListLabel, this._$issuesList);
 
+
+    // TODO : create branches from, on projects
+
+    const multiSelectProjectContainer = $('<div>', {class:'multi-projects-list'});
+    this._$multiProjects = $('<select>', {'multiple': true});
+    console.log(this._$multiProjects);
+    multiSelectProjectContainer.append(this._$multiProjects);
+    config.append(multiSelectProjectContainer);
+
   }
 
   _listProjects() {
@@ -53,9 +62,12 @@ class App {
       return results.json();
     }).then((repos) => { 
       console.log(repos);
+      this._$projects = repos;
       for(var i in repos) {
         let opt = $('<option>').val(repos[i].id).text(repos[i].name);
         this._$projectsList.append(opt);
+        let opt2 = $('<option>').val(repos[i].id).text(repos[i].name);
+        this._$multiProjects.append(opt2);
       }
     }).catch((error) => { console.log(error)});
   }
