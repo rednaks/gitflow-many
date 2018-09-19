@@ -88,7 +88,7 @@ class App {
     .then((issues) => {
       console.log(issues);
       for(let i in issues) {
-        let opt = $('<option>').val(issues[i].id).text(issues[i].title);
+        let opt = $('<option>').val(issues[i].iid).text(issues[i].title);
         this._$issuesList.append(opt);
       }
     })
@@ -124,7 +124,7 @@ class App {
     for(let i in selectedProjects){
 
       const projectId = selectedProjects[i];
-      fetch(`${this._API_URL}/projects/${projectId}/repository/brabches?branch=${branchName}&ref=${fromBranch}`, 
+      fetch(`${this._API_URL}/projects/${projectId}/repository/branches?branch=${branchName}&ref=${fromBranch}`,
         {method: 'POST', headers: this._getHeaders()})
       .then((result) => { console.log(result);})
       .catch((error) => { console.log(error);});;
