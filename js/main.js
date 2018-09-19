@@ -69,7 +69,7 @@ class App {
     }).then((repos) => { 
       console.log(repos);
       this._$projects = repos;
-      for(var i in repos) {
+      for(let i in repos) {
         let opt = $('<option>').val(repos[i].id).text(repos[i].name);
         this._$projectsList.append(opt);
         let opt2 = $('<option>').val(repos[i].id).text(repos[i].name);
@@ -87,7 +87,7 @@ class App {
     })
     .then((issues) => {
       console.log(issues);
-      for(var i in issues) {
+      for(let i in issues) {
         let opt = $('<option>').val(issues[i].id).text(issues[i].title);
         this._$issuesList.append(opt);
       }
@@ -112,7 +112,7 @@ class App {
     const selectedIssue = this._$issuesList.val();
 
 
-    if( !selectedIssue) {
+    if (!selectedIssue) {
       console.error('You need to select an issue');
       return;
     }
@@ -121,7 +121,7 @@ class App {
     const fromBranch = 'master';
     const branchName = `PM-${selectedIssue}`;
 
-    for(var i in selectedProjects){
+    for(let i in selectedProjects){
 
       const projectId = selectedProjects[i];
       fetch(`${this._API_URL}/projects/${projectId}/repository/brabches?branch=${branchName}&ref=${fromBranch}`, 
