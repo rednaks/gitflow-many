@@ -3,65 +3,75 @@ class App {
   constructor() {
     this._API_URL = 'https://gitlab.com/api/v4';
 
-    this._$content = $('#app');
+    this._$content = document.querySelector('#app');
 
-    const config = $('<div>', {id: 'config'});
-    this._$content.append(config);
+    const $config = document.createElement('div');
+    $config.id = 'config';
+    this._$content.appendChild($config);
 
-    const tokenContainer = $('<div>', {class: 'token'});
-    const tokenLabel = $('<label>', {'for': 'id-token'}).text('Gitlab Access Token');
 
-    this._$tokenInput = $('<input>', 
-      {id: 'id-token', 'type': 'text'});
-    try{
-      this._$tokenInput.val(this._getToken());
+    const $tokenContainer = document.createElement('div');
+    $tokenContainer.class = 'token';
+    $config.appendChild($tokenContainer);
+
+    const $tokenLabel = document.createElement('label');
+    $tokenLabel.for = 'id-token';
+    $tokenLabel.innerText = 'Gitlab Access Token';
+    $tokenContainer.appendChild($tokenLabel);
+
+    this._$tokenInput = document.createElement('input');
+    this._$tokenInput.id = 'id-token';
+    this._$tokenInput.type = 'text';
+
+    $tokenContainer.appendChild(this._$tokenInput);
+
+    try {
+      this._$tokenInput.innerHTML = this._getToken();
     } catch {
       console.log('no token found in cache');
     }
 
-    tokenContainer.append(tokenLabel, this._$tokenInput);
-    config.append(tokenContainer);
+    const $listProjectsBtn = document.createElement('button');
+    $listProjectsBtn.id = 'id-list-projects-btn';
+    $listProjectsBtn.innerText = 'List Projects';
+    
+    $listProjectsBtn.addEventListener('click', this._listProjects.bind(this));
+    $config.appendChild($listProjectsBtn);
 
-    const listProjectsBtn = $('<button>', {id: 'id-list-projects-btn'})
-      .text('List Projects')
-      .on('click', this._listProjects.bind(this));
-    config.append(listProjectsBtn);
-
-
-    const projectsListContainer = $('<div>', {class: 'projects-list'});
-    const projectsListLabel = $('<label>', {'for': 'id-projects-list'}).text('Projects List');
-    this._$projectsList = $('<select>', {id: 'id-projects-list'});
-    projectsListContainer.append(projectsListLabel, this._$projectsList);
-    config.append(projectsListContainer);
-
-
-    const listIssuesBtn = $('<button>', {id: 'id-list-projects-btn'})
-    .text('List Issues')
-    .on('click', this._listIssues.bind(this));
-
-    const issuesListLabel = $('<label>', {'for': 'id-issues-list', class:'issues-list'}).text('Issues List');
-    this._$issuesList = $('<select>', {id: 'id-issues-list', class:'issues-list'});
-    config.append(listIssuesBtn, issuesListLabel, this._$issuesList);
+    // TO DO - Convert to pure JavaScript.
+    // const projectsListContainer = $('<div>', {class: 'projects-list'});
+    // const projectsListLabel = $('<label>', {'for': 'id-projects-list'}).text('Projects List');
+    // this._$projectsList = $('<select>', {id: 'id-projects-list'});
+    // projectsListContainer.append(projectsListLabel, this._$projectsList);
+    // config.append(projectsListContainer);
 
 
-    // TODO : create branches from, on projects
+    // const listIssuesBtn = $('<button>', {id: 'id-list-projects-btn'})
+    // .text('List Issues')
+    // .on('click', this._listIssues.bind(this));
 
-    const multiSelectProjectContainer = $('<div>', {class:'multi-projects-list'});
-    this._$multiProjects = $('<select>', {'multiple': true});
-    console.log(this._$multiProjects);
-    multiSelectProjectContainer.append(this._$multiProjects);
-    config.append(multiSelectProjectContainer);
+    // const issuesListLabel = $('<label>', {'for': 'id-issues-list', class:'issues-list'}).text('Issues List');
+    // this._$issuesList = $('<select>', {id: 'id-issues-list', class:'issues-list'});
+    // config.append(listIssuesBtn, issuesListLabel, this._$issuesList);
 
-    const createBranchesBtn = $('<button>', {id: 'create-braches-btn'})
-    .text('Create Branches')
-    .on('click', this._createBranches.bind(this));
 
-    config.append(createBranchesBtn);
+    // // TODO : create branches from, on projects
+
+    // const multiSelectProjectContainer = $('<div>', {class:'multi-projects-list'});
+    // this._$multiProjects = $('<select>', {'multiple': true});
+    // console.log(this._$multiProjects);
+    // multiSelectProjectContainer.append(this._$multiProjects);
+    // config.append(multiSelectProjectContainer);
+
+    // const createBranchesBtn = $('<button>', {id: 'create-braches-btn'})
+    // .text('Create Branches')
+    // .on('click', this._createBranches.bind(this));
+
+    // config.append(createBranchesBtn);
 
   }
 
   _listProjects() {
-
     fetch(`${this._API_URL}/projects?membership=yes`, 
       {headers: this._getHeaders()})
     .then((results) => {
@@ -140,7 +150,7 @@ class App {
       return cached_token;
     }
 
-    const tk = this._$tokenInput.val();
+    const tk = this._$tokenInput.innerHTML;
     if (!tk) {
       throw 'Missing token';
     } else {
@@ -157,8 +167,7 @@ class App {
    }
 
   _getSelectedProjectId() {
-
-    const val =  this._$projectsList.val();
+    const val = this._$projectsList.val();
     if (!val) {
       throw 'No project selected, You need to fetch projects first';
     }
